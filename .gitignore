@@ -1,1 +1,7 @@
-build
+# build and release floders
+[Bb]uild
+[Bb]in
+
+# vscode settings
+.cache
+.vscode

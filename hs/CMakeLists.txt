@@ -11,7 +11,7 @@ target_include_directories(hs
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_options(hs PUBLIC hs_options) # 继承所有编译//链接选项
+target_link_libraries(hs PUBLIC hs_options) # 继承所有编译//链接选项
 
 target_compile_options(hs PRIVATE
     $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:

@@ -2,7 +2,7 @@ add_library(hs_options INTERFACE)
 
 target_compile_options(hs_options INTERFACE
     # GCC/Clang 通用选项
-    $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>>:
+    $<$<OR:$<CXX_COMPILER_ID:GNU>,$<CXX_COMPILER_ID:Clang>>:
         -Wall
         -Wextra                 # 额外警告(比 -Wall 更严格)
         -Wpedantic              # 严格遵循标准
