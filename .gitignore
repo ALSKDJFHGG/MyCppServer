@@ -3,5 +3,7 @@
 [Bb]in
 
 # vscode settings
-.cache
 .vscode
+
+# clangd index
+.cache
