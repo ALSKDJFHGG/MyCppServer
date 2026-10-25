@@ -47,21 +47,21 @@ private:
     std::atomic_flag m_mutex = ATOMIC_FLAG_INIT;
 };
 
-u64 OperationsForThread(size_t thread_index, size_t thread_count) {
+u64 OperationsForThread(std::size_t thread_index, std::size_t thread_count) {
     const u64 base = g_target / thread_count;
     const u64 remainder = g_target % thread_count;
     return base + (thread_index < remainder ? 1 : 0);
 }
 
 template<typename Operator>
-std::chrono::nanoseconds BenchmarkThreads(size_t thread_count, Operator&& operation) {
+std::chrono::nanoseconds BenchmarkThreads(std::size_t thread_count, Operator&& operation) {
     std::latch ready(static_cast<std::ptrdiff_t>(thread_count));
     std::latch start_gate(static_cast<ptrdiff_t>(1));
     std::latch finished(static_cast<ptrdiff_t>(thread_count));
 
     std::vector<std::thread> threads;
     threads.reserve(thread_count);
-    for (size_t thread_index = 0; thread_index < thread_count; ++thread_index) {
+    for (std::size_t thread_index = 0; thread_index < thread_count; ++thread_index) {
         threads.emplace_back([&, thread_index]() {
             ready.count_down();
             start_gate.wait();
@@ -84,10 +84,10 @@ std::chrono::nanoseconds BenchmarkThreads(size_t thread_count, Operator&& operat
 }
 
 template<typename Mutex>
-std::chrono::nanoseconds BenchmarkMutex(size_t thread_count) {
+std::chrono::nanoseconds BenchmarkMutex(std::size_t thread_count) {
     Mutex mutex;
     g_counter = 0;
-    const auto elapsed = BenchmarkThreads(thread_count, [&](size_t, u64 operations) {
+    const auto elapsed = BenchmarkThreads(thread_count, [&](std::size_t, u64 operations) {
         for (u64 index = 0; index < operations; ++index) {
             std::lock_guard<Mutex> lock(mutex);
             ++g_counter;
@@ -124,8 +124,8 @@ int main(int argc, char** argv) {
     std::cout << std::fixed << std::setprecision(2);
     std::cout << "operations: " << g_target << ", average of" << RUNS << "\n\n";
     
-    const std::vector<size_t> thread_counts = {1, 2, 4, 8, 15};
-    for (const size_t thread_count : thread_counts) {
+    const std::vector<std::size_t> thread_counts = {1, 2, 4, 8, 15};
+    for (const std::size_t thread_count : thread_counts) {
         std::cout << "threads: " << thread_count << '\n';
         PrintResult("pthread_spinlock::Spinlock", Run([&]() {return BenchmarkMutex<hs::Spinlock>(thread_count);}));
         PrintResult("atomic_flag::Spinlock", Run([&]() {return BenchmarkMutex<Spinlock>(thread_count);}));
