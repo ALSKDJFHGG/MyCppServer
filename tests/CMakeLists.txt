@@ -9,6 +9,7 @@ list(SORT HS_TEST_SOURCES)
 find_package(Threads REQUIRED)
 
 set(HS_TEST_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin/tests")
+set(HS_TEST_ARGV 1000000)
 
 foreach(TEST_SOURCE IN LISTS HS_TEST_SOURCES)
     get_filename_component(TEST_NAME "${TEST_SOURCE}" NAME_WE)
@@ -33,6 +34,8 @@ foreach(TEST_SOURCE IN LISTS HS_TEST_SOURCES)
         
     endforeach()
     
-    add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}")
+    add_test(NAME "${TEST_NAME}" COMMAND "${TEST_NAME}" "${HS_TEST_ARGV}")
     
 endforeach()
+
+add_subdirectory(inner_tests)
